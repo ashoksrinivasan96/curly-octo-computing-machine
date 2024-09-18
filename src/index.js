@@ -10,16 +10,21 @@ app.get("/", async (req, res) => {
   res.setHeader("Content-Encoding", "none");
   res.flushHeaders();
 
-  // Function to create a delay (simulate setTimeout with async/await)
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  // Using a loop with async/await
-  for (let i = 0; i < 10; i++) {
-    await delay(1000); // Wait 1 second
-    res.write(`data: ${i}\n\n`); // Send the data
-  }
+  const keepAliveInterval = setInterval(() => {
+    res.write(`: heartbeat\n\n`); // Send a comment to keep the connection alive
+  }, 30000); // 30 seconds
 
-  res.end(); // End the stream after all messages have been sent
+  try {
+    for (let i = 0; i < 10; i++) {
+      await delay(1000); // Wait 1 second
+      res.write(`data: ${i}\n\n`); // Send the data
+    }
+  } finally {
+    clearInterval(keepAliveInterval); // Clear the interval when done
+    res.end(); // End the stream after all messages have been sent
+  }
 });
 
 app.listen(port, () => {
