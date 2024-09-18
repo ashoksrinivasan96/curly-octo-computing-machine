@@ -1,3 +1,6 @@
 import server from "../src";
 
-export default server;
+export async function GET() {
+    server();
+}
+//export default server;
