@@ -3,7 +3,7 @@ const app = express();
 const port = 4001;
 
 // Endpoint to stream data
-app.get("/stream", async (req, res) => {
+app.get("/", async (req, res) => {
   // Set headers for Server-Sent Events (SSE)
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache, no-transform");
