@@ -10,7 +10,7 @@ app.get("/", async (req, res) => {
   res.setHeader("Connection", "keep-alive");
   
   // Flush headers so the client starts receiving the response immediately
-  //res.flushHeaders();
+  res.flushHeaders();
 
   // A delay function to simulate async operations
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
