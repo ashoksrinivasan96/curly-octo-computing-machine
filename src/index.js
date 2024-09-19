@@ -1,36 +1,25 @@
 const express = require("express");
+
 const app = express();
 const port = 4001;
 
-// Endpoint to stream data
 app.get("/", async (req, res) => {
-  // Set headers for Server-Sent Events (SSE)
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache, no-transform");
   res.setHeader("Connection", "keep-alive");
-  
-  // Flush headers so the client starts receiving the response immediately
+  res.setHeader("Content-Encoding", "none");
   res.flushHeaders();
 
-  // A delay function to simulate async operations
+  // Function to create a delay (simulate setTimeout with async/await)
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  // Simulating streaming of 10 data chunks
+  // Using a loop with async/await
   for (let i = 0; i < 10; i++) {
-    await delay(1000); // Simulate a 1-second delay for each chunk
-    res.write(`data: ${i}\n\n`); // Stream data to the client
+    await delay(1000); // Wait 1 second
+    res.write(`data: ${i}\n\n`); // Send the data
   }
 
-  // Optional: Send a comment to keep the connection alive
-  const keepAliveInterval = setInterval(() => {
-    res.write(`: keep-alive\n\n`); // This won't display but keeps the connection open
-  }, 30000); // Keep the connection alive by sending a comment every 30 seconds
-
-  // End the response after all data is sent
-  res.on("close", () => {
-    clearInterval(keepAliveInterval); // Clear the interval when the connection closes
-    res.end(); // Ensure the stream is closed properly
-  });
+  res.end(); // End the stream after all messages have been sent
 });
 
 app.listen(port, () => {
